@@ -14,7 +14,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -39,45 +40,48 @@
 
 <main>
     <div class="px-5 py-5">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Dynamic solution program</h5>
-            <!-- Bordered Table -->
-            <form class="row" method="post" action="">
-                <div class="row mb-3">
-                    <p>Text to explain methods, what is does etc. Extremely important text is needed to be added. Otherwise, program won't work and everybody will regret this.</p>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Dynamic solution program</h5>
+                <!-- Bordered Table -->
+                <div class="row" method="post" action="">
+                    <div class="row mb-3">
+                        <p>Text to explain methods, what is does etc. Extremely important text is needed to be added.
+                            Otherwise, program won't work and everybody will regret this.
+                        </p>
+                    </div>
+                    <div class="col-3 mb-1">x</div>
+                    <div class="col-3 mb-1">y</div>
+                    <div class="col-3 mb-1">t</div>
+                    <div class="col-3 mb-1"></div>
+                    <form method="post" class="row" action="">
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" class="form-control" id="inputFunction1">
+                        </div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" class="form-control" id="inputFunction2">
+                        </div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" class="form-control" id="inputFunction3">
+                        </div>
+                        <div class="col-3 mb-2">
+                            <button type="submit" class="btn btn-light">Remove</button>
+                        </div>
+                    </form>
+                    <div>
+                        <button type="submit" class="btn btn-light">Add</button>
+                    </div>
                 </div>
-                <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputModel" class="col-form-label">Model</label>
-                    <input type="text" name="model" class="form-control" id="inputModel">
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
-                <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputFunction" class="col-form-label">Function</label>
-                    <input type="text" name="function" class="form-control" id="inputFunction">
-                </div>
-                <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="selectDimensions" class="col-form-label">Dimensions</label>
-                    <select class="form-select" name="dimensions" id="selectDimensions">
-                        <option selected disabled>...</option>
-                        <option>1</option>
-                        <option>2</option>
-                    </select>
-                </div>
-                <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputRegion" class="col-form-label">Region</label>
-                    <input type="text" name="region" class="form-control" id="inputRegion">
-
-                </div><div class="text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="reset" class="btn btn-secondary">Reset</button>
             </div>
-            </form>
         </div>
-    </div>
     </div>
 </main>
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="/assets/vendor/apexcharts/apexcharts.min.js"></script>
