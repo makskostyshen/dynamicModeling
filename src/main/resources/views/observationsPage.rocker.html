@@ -8,7 +8,7 @@
 <div class="px-5 py-5">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Dynamic solution program</h5>
+            <h5 class="card-title">Math modeling</h5>
             <!-- Bordered Table -->
             <div class="row">
                 <div class="row mb-3">
@@ -16,35 +16,87 @@
                         Otherwise, program won't work and everybody will regret this.
                     </p>
                 </div>
+                <form class="row">
+                    <div class="col-6 col-sm-3 mb-4">
+                        <label for="leftLimitInput" class="px-2 col-form-label">Left limit</label>
+                        <input type="text" name="function" class="form-control" id="leftLimitInput">
+                    </div>
+                    <div class="col-6 col-sm-3 mb-4">
+                        <label for="rightLimitInput" class="px-2 col-form-label">Right limit</label>
+                        <input type="text" name="function" class="form-control" id="rightLimitInput">
+                    </div>
+                </form>
                 <div class="px-4 col-3 mb-1">x</div>
                 <div class="px-3 col-3 mb-1">y</div>
                 <div class="px-2 col-3 mb-1">t</div>
                 <div class="col-3 mb-1"></div>
                 @for (int i = 0; i < observations.size(); i++) {
-                <form method="post" class="row" action="">
+                <form method="post" class="row" action="/observations">
                     <div class="col-3 mb-2">
-                        <input type="text" name="function" value="@?observations.get(i).getArg()" class="form-control" id="@i-input-x">
+                        <input type="text" name="function" value="@?observations.get(i).getX()" class="form-control" id="@i-x-input">
                     </div>
                     <div class="col-3 mb-2">
-                        <input type="text" name="function" value="@?observations.get(i).getVal()" class="form-control" id="@i-input-y">
+                        <input type="text" name="function" value="@?observations.get(i).getY()" class="form-control" id="@i-y-input">
                     </div>
                     <div class="col-3 mb-2">
-                        <input type="text" name="function" value="@?observations.get(i).getTime()" class="form-control" id="@i-input-t">
+                        <input type="text" name="function" value="@?observations.get(i).getT()" class="form-control" id="@i-t-input">
                     </div>
                     <div class="col-3 mb-2">
-                        <button type="submit" class="btn btn-light">Remove</button>
+                        <form>
+                            <input type="text" hidden="" name="observations" class="d-none" id="@i-delete-input">
+                            <button type="submit" id="@i-delete-button" class="btn btn-light">Remove</button>
+                        </form>
                     </div>
                 </form>
                 }
-                <div>
-                    <button type="submit" class="btn btn-light">Add</button>
-                </div>
+                <form method="get" action="/observations">
+                    <input type="text" hidden="" name="observations" class="d-none" id="add-input">
+                    <button type="submit" id="add-button" class="btn btn-light">Add</button>
+                </form>
             </div>
             <div class="text-center">
+                <input type="text" hidden="" name="observations" class="d-none" id="submit">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </div>
 </div>
+    <script type="module">
+        console.log("here")
+        document.getElementById("add-button").addEventListener("click", (event) => {
+            const observations = getAllObservations(Number("@observations.size()"));
+            observations.push(new Observation());
+            console.log(observations)
 
+            document.getElementById("add-input").value = btoa(JSON.stringify(observations));
+        });
+
+        console.log("here")
+
+        function getAllObservations(observationsNumber) {
+            const observations = []
+            for (let i = 0; i < observationsNumber; i++) {
+                const index = i.toString();
+
+                observations.push(
+                    new Observation(
+                        document.getElementById(index + "-x-input").value,
+                        document.getElementById(index + "-y-input").value,
+                        document.getElementById(index + "-t-input").value
+                    )
+                )
+            }
+
+            return observations;
+        }
+
+
+class Observation {
+  constructor(x, y, t) {
+    this.x = x;
+    this.y = y;
+    this.t = t;
+  }
+}
+    </script>
 }

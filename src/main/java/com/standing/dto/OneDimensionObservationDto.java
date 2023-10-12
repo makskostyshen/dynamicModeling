@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OneDimensionObservationDto {
-    private String arg;
-    private String val;
-    private String time;
+    private Integer x;
+    private Integer y;
+    private Integer t;
 }

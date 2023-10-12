@@ -4,38 +4,55 @@
 <div class="px-5 py-5">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Dynamic solution program</h5>
+            <h5 class="card-title">Math modeling</h5>
             <!-- Bordered Table -->
-            <form class="row" method="post" action="">
+            <form class="row" method="get" action="/observations">
                 <div class="row mb-3">
-                    <p>Text to explain methods, what is does etc. Extremely important text is needed to be added. Otherwise, program won't work and everybody will regret this.</p>
+                    <p>A program for mathematical modeling of the state of partially observed spatially distributed dynamic systems.</p>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
                     <label for="inputModel" class="col-form-label">Model</label>
                     <input type="text" name="model" class="form-control" id="inputModel">
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputFunction" class="col-form-label">Function</label>
-                    <input type="text" name="function" class="form-control" id="inputFunction">
+                    <label for="inputGreenFunction" class="col-form-label">Green function</label>
+                    <input disabled type="text" name="function" class="form-control" id="inputGreenFunction">
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
                     <label for="selectDimensions" class="col-form-label">Dimensions</label>
                     <select class="form-select" name="dimensions" id="selectDimensions">
                         <option selected disabled>...</option>
                         <option>1</option>
-                        <option>2</option>
+                        <option disabled>2</option>
                     </select>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputRegion" class="col-form-label">Region</label>
-                    <input type="text" name="region" class="form-control" id="inputRegion">
-
-                </div><div class="text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="reset" class="btn btn-secondary">Reset</button>
+                    <label for="inputModelingFunction" class="col-form-label">Modeling function</label>
+                    <input type="text" name="region" class="form-control" id="inputModelingFunction">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
             </div>
             </form>
         </div>
     </div>
 </div>
+<script>
+    const modelInput = document.getElementById("selectModel");
+    const greenFunctionInput = document.getElementById("inputGreenFunction");
+    console.log("here")
+
+    modelInput.addEventListener("change", (event) => {
+        if (modelInput.value === "0") {
+            greenFunctionInput.value = "1/2*pi*c(c^2t^2 - (x_1^2 + x_2^2)), ct - sqrt(x_1^2 + x_2^2) > 0"
+        } else if (modelInput.value === "1") {
+            greenFunctionInput.value = "exp(-t-(-t+x)^2/(t + 0.0001))/sqrt(t + 0.0001), t > 0"
+        } else if (modelInput.value === "2") {
+            greenFunctionInput.value = "1/(4pi(t-t')^3/2*exp((-(x-x')^2+(y-y')^2)/4k(t-t'))"
+        } else if (modelInput.value === "3") {
+            greenFunctionInput.value = "1/2pi*ln(1/(x-x')^2+(t-t')^2)"
+        }
+    });
+</script>
 }
