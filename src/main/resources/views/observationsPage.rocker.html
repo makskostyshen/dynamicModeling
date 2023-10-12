@@ -1,7 +1,13 @@
 @import java.util.List;
 @import com.standing.dto.OneDimensionObservationDto;
+@import com.standing.config.AppProperties
 
-@args (List<OneDimensionObservationDto> observations)
+@args (
+    List<OneDimensionObservationDto> observations,
+    String leftLimit,
+    String rightLimit,
+    AppProperties properties
+)
 
 @views.main.template() -> {
 
@@ -16,62 +22,97 @@
                         Otherwise, program won't work and everybody will regret this.
                     </p>
                 </div>
-                <form class="row">
+                <form method="get" action="/observations" id="observation-form" class="row">
                     <div class="col-6 col-sm-3 mb-4">
-                        <label for="leftLimitInput" class="px-2 col-form-label">Left limit</label>
-                        <input type="text" name="function" class="form-control" id="leftLimitInput">
+                        <label for="left-limit-input" class="px-2 col-form-label">Left limit</label>
+                        <input value="@?leftLimit" type="text" name="l" class="form-control" id="left-limit-input" required>
                     </div>
                     <div class="col-6 col-sm-3 mb-4">
-                        <label for="rightLimitInput" class="px-2 col-form-label">Right limit</label>
-                        <input type="text" name="function" class="form-control" id="rightLimitInput">
+                        <label for="right-limit-input" class="px-2 col-form-label">Right limit</label>
+                        <input value="@?rightLimit" type="text" name="r" class="form-control" id="right-limit-input" required>
                     </div>
+                    <input type="text" hidden="" name="observations" class="d-none" id="observations-input">
                 </form>
                 <div class="px-4 col-3 mb-1">x</div>
-                <div class="px-3 col-3 mb-1">y</div>
-                <div class="px-2 col-3 mb-1">t</div>
+                <div class="px-4 col-3 mb-1">y</div>
+                <div class="px-4 col-3 mb-1">t</div>
                 <div class="col-3 mb-1"></div>
-                @for (int i = 0; i < observations.size(); i++) {
-                <form method="post" class="row" action="/observations">
-                    <div class="col-3 mb-2">
-                        <input type="text" name="function" value="@?observations.get(i).getX()" class="form-control" id="@i-x-input">
+                <form id="observations-inputs-form">
+                    @for (int i = 0; i < observations.size(); i++) {
+                    <div class="row" id="@i-form">
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" value="@?observations.get(i).getX()" class="form-control" id="@i-x-input" required>
+                        </div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" value="@?observations.get(i).getY()" class="form-control" id="@i-y-input" required>
+                        </div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" value="@?observations.get(i).getT()" class="form-control" id="@i-t-input" required>
+                        </div>
+                        <div class="col-3 mb-2">
+                            @if(observations.size() <= properties.getMinObservationsNumber()) {
+                            <button disabled="" id="@i-remove-button-disabled" class="btn btn-light">Remove</button>
+                            } else {
+                            <button id="@i-remove-button" class="btn btn-light">Remove</button>
+                            }
+                        </div>
                     </div>
-                    <div class="col-3 mb-2">
-                        <input type="text" name="function" value="@?observations.get(i).getY()" class="form-control" id="@i-y-input">
-                    </div>
-                    <div class="col-3 mb-2">
-                        <input type="text" name="function" value="@?observations.get(i).getT()" class="form-control" id="@i-t-input">
-                    </div>
-                    <div class="col-3 mb-2">
-                        <form>
-                            <input type="text" hidden="" name="observations" class="d-none" id="@i-delete-input">
-                            <button type="submit" id="@i-delete-button" class="btn btn-light">Remove</button>
-                        </form>
-                    </div>
+                    }
                 </form>
-                }
-                <form method="get" action="/observations">
-                    <input type="text" hidden="" name="observations" class="d-none" id="add-input">
-                    <button type="submit" id="add-button" class="btn btn-light">Add</button>
-                </form>
+                <div class="mt-1 px-4 row">
+                    <div id="error-block" class="badge bg-danger d-none" style="opacity: 0.9;">
+                        Values should not be empty
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <button id="add-button" class="btn btn-light">Add</button>
+                <div>
             </div>
             <div class="text-center">
-                <input type="text" hidden="" name="observations" class="d-none" id="submit">
-                <button type="submit" class="btn btn-primary">Submit</button>
+            <div>
+                <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
+            </div>
             </div>
         </div>
     </div>
 </div>
     <script type="module">
-        console.log("here")
-        document.getElementById("add-button").addEventListener("click", (event) => {
-            const observations = getAllObservations(Number("@observations.size()"));
-            observations.push(new Observation());
-            console.log(observations)
 
-            document.getElementById("add-input").value = btoa(JSON.stringify(observations));
+        const observationsNumber = Number("@observations.size()");
+
+        document.getElementById("add-button").addEventListener("click", (event) => {
+            const observations = getAllObservations(observationsNumber);
+            observations.push(new Observation());
+            submitForm(observations);
         });
 
-        console.log("here")
+        document.getElementById("submit-button").addEventListener("click", (event) => {
+            if (document.getElementById("observations-inputs-form").checkValidity() && document.getElementById("observation-form").checkValidity()) {
+                const observations = getAllObservations(observationsNumber);
+                submitForm(observations);
+            } else {
+                document.getElementById("error-block").classList.remove("d-none")
+            }
+        });
+
+        if (observationsNumber > Number("@properties.getMinObservationsNumber()")) {
+            for (let i = 0; i < observationsNumber; i++) {
+                let buttonId = i.toString() + "-remove-button";
+
+                document.getElementById(buttonId).addEventListener("click", (event) => {
+                    let allObservations = getAllObservations(observationsNumber);
+
+                    let filteredObservations = allObservations.slice(0,i).concat( allObservations.slice(i+1));
+
+                    submitForm(filteredObservations);
+                });
+            }
+        }
+
+        function submitForm(observations) {
+            document.getElementById("observations-input").value = btoa(JSON.stringify(observations));
+            document.getElementById("observation-form").submit();
+        }
 
         function getAllObservations(observationsNumber) {
             const observations = []
@@ -91,12 +132,12 @@
         }
 
 
-class Observation {
-  constructor(x, y, t) {
-    this.x = x;
-    this.y = y;
-    this.t = t;
-  }
-}
+        class Observation {
+          constructor(x, y, t) {
+            this.x = x;
+            this.y = y;
+            this.t = t;
+          }
+        }
     </script>
 }

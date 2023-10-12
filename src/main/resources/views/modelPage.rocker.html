@@ -11,8 +11,14 @@
                     <p>A program for mathematical modeling of the state of partially observed spatially distributed dynamic systems.</p>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputModel" class="col-form-label">Model</label>
-                    <input type="text" name="model" class="form-control" id="inputModel">
+                    <label for="selectModel" class="col-form-label">Model</label>
+                    <select name="model" class="form-select" id="selectModel">
+                        <option selected disabled>...</option>
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
                     <label for="inputGreenFunction" class="col-form-label">Green function</label>
@@ -20,7 +26,7 @@
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
                     <label for="selectDimensions" class="col-form-label">Dimensions</label>
-                    <select class="form-select" name="dimensions" id="selectDimensions">
+                    <select name="dimensions" class="form-select" id="selectDimensions">
                         <option selected disabled>...</option>
                         <option>1</option>
                         <option disabled>2</option>

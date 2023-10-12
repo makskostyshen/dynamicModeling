@@ -13,14 +13,14 @@ import static io.micronaut.http.MediaType.TEXT_HTML;
 
 @Controller
 @RequiredArgsConstructor
-public class GreetingController {
+public class ModelController {
 
     private final PythonExecutor executor;
 
     @Get
     @Produces(TEXT_HTML)
     public HttpResponse<?> get() {
-        return HttpResponse.ok(new RockerWritable(views.helloPage.template()));
+        return HttpResponse.ok(new RockerWritable(views.modelPage.template()));
     }
 
     @Post
@@ -31,6 +31,6 @@ public class GreetingController {
 
         executor.executeCreatingDirectory();
 
-        return HttpResponse.ok(new RockerWritable(views.helloPage.template()));
+        return HttpResponse.ok(new RockerWritable(views.modelPage.template()));
     }
 }

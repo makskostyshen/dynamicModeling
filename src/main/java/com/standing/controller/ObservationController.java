@@ -1,5 +1,6 @@
 package com.standing.controller;
 
+import com.standing.config.AppProperties;
 import com.standing.dto.OneDimensionObservationDto;
 import com.standing.service.api.ObservationsCodec;
 import io.micronaut.core.util.StringUtils;
@@ -17,38 +18,39 @@ import static io.micronaut.http.MediaType.TEXT_HTML;
 @Controller("/observations")
 @RequiredArgsConstructor
 public class ObservationController {
-    private static final int INITIAL_OBSERVATIONS_NUMBER = 3;
 
     private final ObservationsCodec observationsCodec;
+
+    private final AppProperties properties;
 
     @Get
     @Produces(TEXT_HTML)
     public HttpResponse<?> get(
-            @Nullable @QueryValue String observations
+            @Nullable @QueryValue(value = "observations") String observationsValue,
+            @Nullable @QueryValue(value = "l") String leftLimit,
+            @Nullable @QueryValue(value = "r") String rightLimit
     ) {
-        if (!StringUtils.isEmpty(observations)) {
-            List<OneDimensionObservationDto> given = observationsCodec.decode(observations);
-            List<OneDimensionObservationDto> expanded = expandObservations(given);
-            return HttpResponse.ok(new RockerWritable(views.observationsPage.template(
-                    expanded
-            )));
-        }
         return HttpResponse.ok(new RockerWritable(views.observationsPage.template(
-                expandObservations(List.of(new OneDimensionObservationDto(1, 2, 3)))
-        )));
-
+                expandObservations(getObservations(observationsValue)), leftLimit, rightLimit, properties)
+        ));
     }
 
     private List<OneDimensionObservationDto> expandObservations(final List<OneDimensionObservationDto> observations) {
         int size = observations.size();
 
-        if (size < INITIAL_OBSERVATIONS_NUMBER) {
+        if (size < properties.getMinObservationsNumber()) {
             List<OneDimensionObservationDto> expanded = new ArrayList<>(observations);
-            for (int i = 0; i < INITIAL_OBSERVATIONS_NUMBER - size; i++) {
+            for (int i = 0; i < properties.getMinObservationsNumber() - size; i++) {
                 expanded.add(new OneDimensionObservationDto());
             }
             return expanded;
         }
         return observations;
+    }
+
+    private List<OneDimensionObservationDto> getObservations(final String observationsValue) {
+        return !StringUtils.isEmpty(observationsValue)
+            ? observationsCodec.decode(observationsValue)
+            : List.of();
     }
 }
