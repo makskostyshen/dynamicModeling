@@ -2,8 +2,6 @@ package com.standing.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.standing.dto.OneDimensionObservationDto;
 import com.standing.service.api.ObservationsCodec;

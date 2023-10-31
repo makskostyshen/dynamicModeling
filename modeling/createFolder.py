@@ -1,12 +1,14 @@
 import os
 import datetime
 import sys
+import time
 
 # Check if at least one argument (folder name) is provided
 if len(sys.argv) < 2:
     print("Usage: python my_script.py <folder_name>")
     sys.exit(1)
 
+time.sleep(10)
 
 # Access the folder name argument (assuming it's the second argument)
 directory_path = sys.argv[1] + '/'

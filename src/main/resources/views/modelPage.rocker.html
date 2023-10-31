@@ -1,44 +1,80 @@
-@args ()
+@import com.standing.dto.ModelDetailsDto
+
+@args (
+    ModelDetailsDto modelDetails
+)
 
 @views.main.template() -> {
 <div class="px-5 py-5">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Math modeling</h5>
+            <h5 class="card-title">Математичне моделювання</h5>
             <!-- Bordered Table -->
             <form class="row" method="get" action="/observations">
                 <div class="row mb-3">
-                    <p>A program for mathematical modeling of the state of partially observed spatially distributed dynamic systems.</p>
+                    <p>Програма для математичного моделювання стану неповно спостережуваних просторово розподілених динамічних систем.</p>
+                </div>
+                <div class="row mb-3">
+                    <p>Обреріть вхідні параметри:</p>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="selectModel" class="col-form-label">Model</label>
+                    <label for="selectModel" class="col-form-label">Модель</label>
                     <select name="model" class="form-select" id="selectModel">
                         <option selected disabled>...</option>
-                        <option label="d^2y/dt^2-c^2(d^2y/dx_1^2 + d^2y/dx_2^2)=cos(1/2*pi*x_1)cos(1/2*pi*x_2)t">0</option>
-                        <option label="dY/dt+dY/dx+Y-d^2Y/dx^2">1</option>
-                        <option label="dy(s)/dt-d^2(s)/dx^2-d^2y(s)/dy^2">2</option>
-                        <option label="d^2y/dx^2 + d^2y/dt^2 = -0.2sin(x/5)-0.25cos(t/4)">3</option>
+                        @if("1".equals(modelDetails.getModel())) {
+                            <option label="L(ds) = dt - k*d^2x" selected>1</option>
+                            <option label="L(ds) = d^2t - c^2*d^2x">2</option>
+                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
+                        } else if("2".equals(modelDetails.getModel())) {
+                            <option label="L(ds) = dt - k*d^2x">1</option>
+                            <option label="L(ds) = d^2t - c^2*d^2x" selected>2</option>
+                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
+                        } else if("3".equals(modelDetails.getModel())) {
+                            <option label="L(ds) = dt - k*d^2x" selected>1</option>
+                            <option label="L(ds) = d^2t - c^2*d^2x">2</option>
+                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2" selected>3</option>
+                        } else {
+                            <option label="L(ds) = dt - k*d^2x">1</option>
+                            <option label="L(ds) = d^2t - c^2*d^2x">2</option>
+                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
+                        }
                     </select>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputGreenFunction" class="col-form-label">Green function</label>
-                    <input disabled type="text" name="function" class="form-control" id="inputGreenFunction">
+                    <label for="inputGreenFunction" class="col-form-label">Функція Гріна</label>
+                    <input disabled type="text" class="form-control" id="inputGreenFunction">
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="selectDimensions" class="col-form-label">Dimensions</label>
-                    <select name="dimensions" class="form-select" id="selectDimensions">
+                    <label for="selectDimensions" class="col-form-label">Розмірність</label>
+                    <select name="dimensionsNumber" class="form-select" id="selectDimensions">
                         <option selected disabled>...</option>
+                        @if("1".equals(modelDetails.getDimensionsNumber())) {
+                        <option selected>1</option>
+                        } else {
                         <option>1</option>
+                        }
                         <option disabled>2</option>
                     </select>
                 </div>
                 <div class="row mb-3 col-12 col-sm-6 px-3">
-                    <label for="inputModelingFunction" class="col-form-label">Modeling function</label>
-                    <input type="text" name="region" class="form-control" id="inputModelingFunction">
+                    <label for="selectStateFunction" class="col-form-label">Функція стану</label>
+                    <select name="stateFunction" class="form-select" id="selectStateFunction">
+                        <option selected disabled>...</option>
+                        @if("1".equals(modelDetails.getStateFunction())) {
+                            <option label="y = cos(x) + sin(t)" selected>1</option>
+                            <option label="y = 1 + x^2 + 1/4*t">2</option>
+                        } else if("2".equals(modelDetails.getStateFunction())) {
+                            <option label="y = cos(x) + sin(t)">1</option>
+                            <option label="y = 1 + x^2 + 1/4*t" selected>2</option>
+                        } else {
+                            <option label="y = cos(x) + sin(t)">1</option>
+                            <option label="y = 1 + x^2 + 1/4*t">2</option>
+                        }
+                    </select>
                 </div>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Підтвердити</button>
+                    <button type="reset" class="btn btn-secondary">Скинути</button>
             </div>
             </form>
         </div>
@@ -49,16 +85,19 @@
     const greenFunctionInput = document.getElementById("inputGreenFunction");
     console.log("here")
 
-    modelInput.addEventListener("change", (event) => {
-        if (modelInput.value === "0") {
-            greenFunctionInput.value = "1/2*pi*c(c^2t^2 - (x_1^2 + x_2^2)), ct - sqrt(x_1^2 + x_2^2) > 0"
+    modelInput.addEventListener("change", (event) => handle());
+    window.addEventListener("load", (event) => handle());
+
+    function handle() {
+        if (modelInput.value === "...") {
+            greenFunctionInput.value = "Оберіть модель"
         } else if (modelInput.value === "1") {
-            greenFunctionInput.value = "exp(-t-(-t+x)^2/(t + 0.0001))/sqrt(t + 0.0001), t > 0"
+            greenFunctionInput.value = "G(s) = H(t)/(4pi*kt)^1/2 * exp(-x^2/4kt), s=(x,t)"
         } else if (modelInput.value === "2") {
-            greenFunctionInput.value = "1/(4pi(t-t')^3/2*exp((-(x-x')^2+(y-y')^2)/4k(t-t'))"
+            greenFunctionInput.value = "G(s) = H(t - r/c)/2c, s=(x,t), r = |x|"
         } else if (modelInput.value === "3") {
-            greenFunctionInput.value = "1/2pi*ln(1/(x-x')^2+(t-t')^2)"
+            greenFunctionInput.value = "G(x,y) = exp(-t - (-t + x)^2/(t + 0.0001))/sqrt(t + 0.0001), t > 0"
         }
-    });
+    }
 </script>
 }

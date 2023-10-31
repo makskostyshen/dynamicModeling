@@ -1,8 +1,10 @@
 @import java.util.List;
 @import com.standing.dto.OneDimensionObservationDto;
 @import com.standing.config.AppProperties
+@import com.standing.dto.ModelDetailsDto
 
 @args (
+    ModelDetailsDto modelDetails,
     List<OneDimensionObservationDto> observations,
     String leftLimit,
     String rightLimit,
@@ -14,23 +16,26 @@
 <div class="px-5 py-5">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Math modeling</h5>
+            <h5 class="card-title">Математичне моделювання</h5>
             <!-- Bordered Table -->
             <div class="row">
                 <div class="row mb-3">
-                    <p>Text to explain methods, what is does etc. Extremely important text is needed to be added.
-                        Otherwise, program won't work and everybody will regret this.
+                    <p>
+                        Введіть межі області та дискретні спостереження:
                     </p>
                 </div>
                 <form method="get" action="/observations" id="observation-form" class="row">
                     <div class="col-6 col-sm-3 mb-4">
-                        <label for="left-limit-input" class="px-2 col-form-label">Left limit</label>
-                        <input value="@?leftLimit" type="text" name="l" class="form-control" id="left-limit-input" required>
+                        <label for="left-limit-input" class="px-2 col-form-label">x min</label>
+                        <input value="@?leftLimit" type="text" name="xMin" class="form-control" id="left-limit-input" required>
                     </div>
                     <div class="col-6 col-sm-3 mb-4">
-                        <label for="right-limit-input" class="px-2 col-form-label">Right limit</label>
-                        <input value="@?rightLimit" type="text" name="r" class="form-control" id="right-limit-input" required>
+                        <label for="right-limit-input" class="px-2 col-form-label">x max</label>
+                        <input value="@?rightLimit" type="text" name="xMax" class="form-control" id="right-limit-input" required>
                     </div>
+                    <input type="text" value="@?modelDetails.getModel()" hidden="" name="model" class="d-none" id="model-input">
+                    <input type="text" value="@?modelDetails.getDimensionsNumber()" hidden="" name="dimensionsNumber" class="d-none" id="dimensions-number-input">
+                    <input type="text" value="@?modelDetails.getStateFunction()" hidden="" name="stateFunction" class="d-none" id="state-function-input">
                     <input type="text" hidden="" name="observations" class="d-none" id="observations-input">
                 </form>
                 <div class="px-4 col-3 mb-1">x</div>
@@ -51,9 +56,9 @@
                         </div>
                         <div class="col-3 mb-2">
                             @if(observations.size() <= properties.getMinObservationsNumber()) {
-                            <button disabled="" id="@i-remove-button-disabled" class="btn btn-light">Remove</button>
+                            <button disabled="" id="@i-remove-button-disabled" class="btn btn-light">Видалити</button>
                             } else {
-                            <button id="@i-remove-button" class="btn btn-light">Remove</button>
+                            <button id="@i-remove-button" class="btn btn-light">Видалити</button>
                             }
                         </div>
                     </div>
@@ -61,17 +66,16 @@
                 </form>
                 <div class="mt-1 px-4 row">
                     <div id="error-block" class="badge bg-danger d-none" style="opacity: 0.9;">
-                        Values should not be empty
+                        Значення не мають бути пустими
                     </div>
                 </div>
                 <div class="mt-2">
-                    <button id="add-button" class="btn btn-light">Add</button>
+                    <button id="add-button" class="btn btn-light">Додати</button>
                 <div>
             </div>
             <div class="text-center">
-            <div>
-                <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-            </div>
+                <button type="submit" id="submit-button" class="btn btn-primary">Почати обчислення</button>
+                <a href="/model?model=@?modelDetails.getModel()&dimensionsNumber=@?modelDetails.getDimensionsNumber()&stateFunction=@?modelDetails.getStateFunction()" class="btn btn-secondary">Назад</a>
             </div>
         </div>
     </div>
@@ -89,6 +93,8 @@
         document.getElementById("submit-button").addEventListener("click", (event) => {
             if (document.getElementById("observations-inputs-form").checkValidity() && document.getElementById("observation-form").checkValidity()) {
                 const observations = getAllObservations(observationsNumber);
+
+                document.getElementById("observation-form").method='post';
                 submitForm(observations);
             } else {
                 document.getElementById("error-block").classList.remove("d-none")
