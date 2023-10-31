@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OneDimensionObservationDto {
     private Integer x;
-    private Integer y;
     private Integer t;
 }

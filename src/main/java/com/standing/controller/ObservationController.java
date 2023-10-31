@@ -35,8 +35,11 @@ public class ObservationController {
             @Nullable @QueryValue String dimensionsNumber,
             @Nullable @QueryValue String stateFunction,
             @Nullable @QueryValue(value = "observations") String observationsValue,
-            @Nullable @QueryValue(value = "l") String leftLimit,
-            @Nullable @QueryValue(value = "r") String rightLimit
+            @Nullable @QueryValue(value = "in") String initialObservation,
+            @Nullable @QueryValue(value = "l") String leftLimitObservation,
+            @Nullable @QueryValue(value = "r") String rightLimitObservation,
+            @Nullable @QueryValue(value = "xMin") String leftLimit,
+            @Nullable @QueryValue(value = "xMax") String rightLimit
     ) {
         return HttpResponse.ok(new RockerWritable(
                 views.observationsPage.template(
@@ -46,6 +49,9 @@ public class ObservationController {
                                 stateFunction
                         ),
                         expandObservations(getObservations(observationsValue)),
+                        initialObservation != null ? observationsCodec.decode(initialObservation).get(0) : new OneDimensionObservationDto(),
+                        leftLimitObservation != null ? observationsCodec.decode(leftLimitObservation).get(0) : new OneDimensionObservationDto(),
+                        rightLimitObservation != null ? observationsCodec.decode(rightLimitObservation).get(0) : new OneDimensionObservationDto(),
                         leftLimit,
                         rightLimit,
                         properties)

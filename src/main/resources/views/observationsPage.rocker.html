@@ -6,8 +6,11 @@
 @args (
     ModelDetailsDto modelDetails,
     List<OneDimensionObservationDto> observations,
-    String leftLimit,
-    String rightLimit,
+    OneDimensionObservationDto in,
+    OneDimensionObservationDto l,
+    OneDimensionObservationDto r,
+    String xMin,
+    String xMax,
     AppProperties properties
 )
 
@@ -27,29 +30,59 @@
                 <form method="get" action="/observations" id="observation-form" class="row">
                     <div class="col-6 col-sm-3 mb-4">
                         <label for="left-limit-input" class="px-2 col-form-label">x min</label>
-                        <input value="@?leftLimit" type="text" name="xMin" class="form-control" id="left-limit-input" required>
+                        <input value="@?xMin" type="text" name="xMin" class="form-control" id="left-limit-input" required>
                     </div>
                     <div class="col-6 col-sm-3 mb-4">
                         <label for="right-limit-input" class="px-2 col-form-label">x max</label>
-                        <input value="@?rightLimit" type="text" name="xMax" class="form-control" id="right-limit-input" required>
+                        <input value="@?xMax" type="text" name="xMax" class="form-control" id="right-limit-input" required>
                     </div>
+                    <div class="col-6 mb-4"></div>
                     <input type="text" value="@?modelDetails.getModel()" hidden="" name="model" class="d-none" id="model-input">
                     <input type="text" value="@?modelDetails.getDimensionsNumber()" hidden="" name="dimensionsNumber" class="d-none" id="dimensions-number-input">
                     <input type="text" value="@?modelDetails.getStateFunction()" hidden="" name="stateFunction" class="d-none" id="state-function-input">
                     <input type="text" hidden="" name="observations" class="d-none" id="observations-input">
-                </form>
-                <div class="px-4 col-3 mb-1">x</div>
-                <div class="px-4 col-3 mb-1">y</div>
-                <div class="px-4 col-3 mb-1">t</div>
-                <div class="col-3 mb-1"></div>
-                <form id="observations-inputs-form">
-                    @for (int i = 0; i < observations.size(); i++) {
-                    <div class="row" id="@i-form">
+                    <input type="text" hidden="" name="in" class="d-none" id="in-input">
+                    <input type="text" hidden="" name="l" class="d-none" id="l-input">
+                    <input type="text" hidden="" name="r" class="d-none" id="r-input">
+
+                    <div class="col-3 mb-1"></div>
+                    <div class="px-4 col-3 mb-1">x</div>
+                    <div class="px-4 col-3 mb-1">t</div>
+                    <div class="col-3 mb-1"></div>
+
+                    <div class="row" id="initial-form">
+                        <div class="col-3 mb-2">Початкове</div>
                         <div class="col-3 mb-2">
-                            <input type="text" name="function" value="@?observations.get(i).getX()" class="form-control" id="@i-x-input" required>
+                            <input type="text" value="@?in.getX()" class="form-control" id="initial-x-input" required>
                         </div>
                         <div class="col-3 mb-2">
-                            <input type="text" name="function" value="@?observations.get(i).getY()" class="form-control" id="@i-y-input" required>
+                            <input type="text" value="0" disabled class="form-control" id="initial-t-input" required>
+                        </div>
+                        <div class="col-3 mb-2"></div>
+                        <div class="col-3 mb-2">Ліва границя</div>
+                        <div class="col-3 mb-2">
+                            <input type="text" value="@?l.getX()" disabled class="form-control" id="left-x-input" required>
+                        </div>
+                        <div class="col-3 mb-2">
+                            <input type="text" value="@?l.getT()" class="form-control" id="left-t-input" required>
+                        </div>
+                        <div class="col-3 mb-2"></div>
+                        <div class="col-3 mb-2">Права границя</div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" value="@?r.getX()" disabled class="form-control" id="right-x-input" required>
+                        </div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" value="@?r.getT()" class="form-control" id="right-t-input" required>
+                        </div>
+                        <div class="col-3 mb-2"></div>
+                    </div>
+                </form>
+                <form id="observations-inputs-form" class="row">
+                    @for (int i = 0; i < observations.size(); i++) {
+                    <div class="row" id="@i-form">
+                        <div class="col-3 mb-2"></div>
+                        <div class="col-3 mb-2">
+                            <input type="text" name="function" value="@?observations.get(i).getX()" class="form-control" id="@i-x-input" required>
                         </div>
                         <div class="col-3 mb-2">
                             <input type="text" name="function" value="@?observations.get(i).getT()" class="form-control" id="@i-t-input" required>
@@ -117,6 +150,22 @@
 
         function submitForm(observations) {
             document.getElementById("observations-input").value = btoa(JSON.stringify(observations));
+            document.getElementById("in-input").value = btoa("[" + JSON.stringify(
+                    new Observation(
+                        document.getElementById("initial-x-input").value,
+                        document.getElementById("initial-t-input").value
+                    )) + "]");
+            console.log(document.getElementById("in-input").value);
+            document.getElementById("l-input").value = btoa("[" + JSON.stringify(
+                    new Observation(
+                        document.getElementById("left-x-input").value,
+                        document.getElementById("left-t-input").value
+                    )) + "]");
+            document.getElementById("r-input").value = btoa("[" + JSON.stringify(
+                    new Observation(
+                        document.getElementById("right-x-input").value,
+                        document.getElementById("right-t-input").value
+                    )) + "]");
             document.getElementById("observation-form").submit();
         }
 
@@ -128,10 +177,9 @@
                 observations.push(
                     new Observation(
                         document.getElementById(index + "-x-input").value,
-                        document.getElementById(index + "-y-input").value,
                         document.getElementById(index + "-t-input").value
                     )
-                )
+                );
             }
 
             return observations;
@@ -139,11 +187,20 @@
 
 
         class Observation {
-          constructor(x, y, t) {
+          constructor(x, t) {
             this.x = x;
-            this.y = y;
             this.t = t;
           }
         }
+
+
+    document.getElementById("left-limit-input").addEventListener('input', (event) => {
+            document.getElementById("left-x-input").value = document.getElementById("left-limit-input").value;
+    });
+
+    document.getElementById("right-limit-input").addEventListener('input', (event) => {
+            document.getElementById("right-x-input").value = document.getElementById("right-limit-input").value;
+    });
+
     </script>
 }
