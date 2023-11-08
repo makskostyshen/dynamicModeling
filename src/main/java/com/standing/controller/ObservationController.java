@@ -1,11 +1,15 @@
 package com.standing.controller;
 
-import com.standing.PythonExecutor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.standing.config.AppProperties;
 import com.standing.dto.ModelAndOneDimensionObservationsDto;
 import com.standing.dto.ModelDetailsDto;
 import com.standing.dto.OneDimensionObservationDto;
+import com.standing.dto.ResultDto;
+import com.standing.service.api.ComputationService;
 import com.standing.service.api.ObservationsCodec;
+import com.standing.service.model.OneDimensionArgumentsModel;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -27,7 +31,9 @@ public class ObservationController {
 
     private final AppProperties properties;
 
-    private final PythonExecutor executor;
+    private final ComputationService computationService;
+
+    private final ObjectMapper objectMapper;
     @Get
     @Produces(TEXT_HTML)
     public HttpResponse<?> get(
@@ -63,14 +69,34 @@ public class ObservationController {
     @Produces(TEXT_HTML)
     public HttpResponse<?> post(
             @Nullable @Body ModelAndOneDimensionObservationsDto dto
-            ) {
-        System.out.println("starting to execute python");
+            ) throws JsonProcessingException {
+        ResultDto result = computationService.compute(
+                OneDimensionArgumentsModel.builder()
+                        .modelId(dto.getModel())
+                        .stateFunctionId(dto.getStateFunction())
+                        .dimensionsNumberId(dto.getDimensionsNumber())
+                        .region(List.of(dto.getXMin(), dto.getXMax()).toString())
+                        .initialObservation(
+                                objectMapper.writeValueAsString(
+                                        observationsCodec.decode(dto.getIn()).get(0))
+                        )
+                        .limitObservations(
+                                objectMapper.writeValueAsString(
+                                        List.of(
+                                                observationsCodec.decode(dto.getL()).get(0),
+                                                observationsCodec.decode(dto.getR()).get(0)
+                                        )
+                                )
 
-        executor.executeCreatingDirectory();
+                        )
+                        .generalObservations(
+                                objectMapper.writeValueAsString(
+                                        observationsCodec.decode(dto.getObservations())
+                                )
+                        )
+                        .build());
 
-        System.out.println("finish creating directory");
-
-        return HttpResponse.ok(new RockerWritable(views.resultPage.template()));
+        return HttpResponse.ok(new RockerWritable(views.resultPage.template(result)));
     }
 
     private List<OneDimensionObservationDto> expandObservations(final List<OneDimensionObservationDto> observations) {

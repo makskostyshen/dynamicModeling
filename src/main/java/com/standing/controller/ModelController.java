@@ -1,6 +1,6 @@
 package com.standing.controller;
 
-import com.standing.PythonExecutor;
+import com.standing.service.impl.CommandsExecutorImpl;
 import com.standing.dto.ModelDetailsDto;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -17,8 +17,7 @@ import static io.micronaut.http.MediaType.TEXT_HTML;
 @RequiredArgsConstructor
 public class ModelController {
 
-    private final PythonExecutor executor;
-
+    private final CommandsExecutorImpl executor;
     @Get
     @Produces(TEXT_HTML)
     public HttpResponse<?> get(
@@ -36,8 +35,6 @@ public class ModelController {
     @Produces(TEXT_HTML)
     public  HttpResponse<?> post(@Body Map<String, String> args) {
         System.out.println(args);
-
-        executor.executeCreatingDirectory();
 
         return HttpResponse.ok(new RockerWritable(views.modelPage.template(new ModelDetailsDto())));
     }

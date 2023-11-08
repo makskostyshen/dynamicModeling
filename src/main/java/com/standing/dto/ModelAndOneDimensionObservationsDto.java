@@ -18,4 +18,7 @@ public class ModelAndOneDimensionObservationsDto {
     private String observations;
     private String xMin;
     private String xMax;
+    private String in;
+    private String l;
+    private String r;
 }
