@@ -96,7 +96,12 @@ public class ObservationController {
                         )
                         .build());
 
-        return HttpResponse.ok(new RockerWritable(views.resultPage.template(result)));
+        return HttpResponse.ok(new RockerWritable(views.resultPage.template(
+                new ResultDto(
+                        result.getGraphPath(),
+                        result.getFunction()
+                )
+        )));
     }
 
     private List<OneDimensionObservationDto> expandObservations(final List<OneDimensionObservationDto> observations) {

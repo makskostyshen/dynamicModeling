@@ -13,8 +13,10 @@
             <!-- Bordered Table -->
             <div class="row">
                 <div class="row mb-3">
-                    <p>Обрахунок завершено. Результат:</p>
+                    <p>Обрахунок завершено</p>
+                    <p>Отримана функція: @resultDto.getFunction()</p>
                 </div>
+                <img id="ItemPreview" alt="">
                 <div class="row">
                 </div>
                 <div class="text-center">
@@ -24,4 +26,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('load', function() {
+        // Your code to be executed after the page has fully loaded
+        console.log("@resultDto.getGraphPath()");
+        document.getElementById("ItemPreview").src = "data:image/png;base64," + "@resultDto.getGraphPath()";
+
+    });
+</script>
 }
