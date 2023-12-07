@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static io.micronaut.http.MediaType.TEXT_HTML;
 
@@ -45,7 +46,8 @@ public class ObservationController {
             @Nullable @QueryValue(value = "l") String leftLimitObservation,
             @Nullable @QueryValue(value = "r") String rightLimitObservation,
             @Nullable @QueryValue(value = "xMin") String leftLimit,
-            @Nullable @QueryValue(value = "xMax") String rightLimit
+            @Nullable @QueryValue(value = "xMax") String rightLimit,
+            @Nullable @QueryValue(value = "tMax") String maxTime
     ) {
         return HttpResponse.ok(new RockerWritable(
                 views.observationsPage.template(
@@ -60,6 +62,7 @@ public class ObservationController {
                         rightLimitObservation != null ? observationsCodec.decode(rightLimitObservation).get(0) : new OneDimensionObservationDto(),
                         leftLimit,
                         rightLimit,
+                        maxTime,
                         properties)
         ));
     }
@@ -76,10 +79,6 @@ public class ObservationController {
                         .stateFunctionId(dto.getStateFunction())
                         .dimensionsNumberId(dto.getDimensionsNumber())
                         .region(List.of(dto.getXMin(), dto.getXMax()).toString())
-                        .initialObservation(
-                                objectMapper.writeValueAsString(
-                                        observationsCodec.decode(dto.getIn()).get(0))
-                        )
                         .limitObservations(
                                 objectMapper.writeValueAsString(
                                         List.of(
@@ -91,9 +90,14 @@ public class ObservationController {
                         )
                         .generalObservations(
                                 objectMapper.writeValueAsString(
-                                        observationsCodec.decode(dto.getObservations())
+                                        Stream.concat(
+                                                observationsCodec.decode(dto.getObservations()).stream(),
+                                                Stream.of(observationsCodec.decode(dto.getIn()).get(0))
+                                        )
+                                        .toList()
                                 )
                         )
+                        .maxTime(dto.getTMax())
                         .build());
 
         return HttpResponse.ok(new RockerWritable(views.resultPage.template(

@@ -21,4 +21,5 @@ public class ModelAndOneDimensionObservationsDto {
     private String in;
     private String l;
     private String r;
+    private String tMax;
 }

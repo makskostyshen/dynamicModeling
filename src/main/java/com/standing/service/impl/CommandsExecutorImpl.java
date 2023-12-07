@@ -32,7 +32,7 @@ public class CommandsExecutorImpl implements CommandsExecutor {
                 arguments.getStateFunctionId(),
                 arguments.getDimensionsNumberId(),
                 arguments.getRegion(),
-                arguments.getInitialObservation(),
+                arguments.getMaxTime(),
                 arguments.getLimitObservations(),
                 arguments.getGeneralObservations(),
                 solutionFunctionFilePath,

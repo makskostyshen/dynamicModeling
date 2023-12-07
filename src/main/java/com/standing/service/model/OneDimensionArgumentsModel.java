@@ -1,9 +1,7 @@
 package com.standing.service.model;
 
-import com.standing.dto.OneDimensionObservationDto;
-import lombok.*;
-
-import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -15,4 +13,5 @@ public class OneDimensionArgumentsModel {
     private String initialObservation;
     private String limitObservations;
     private String generalObservations;
+    private String maxTime;
 }

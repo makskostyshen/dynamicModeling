@@ -23,20 +23,20 @@
                         <option selected disabled>...</option>
                         @if("1".equals(modelDetails.getModel())) {
                             <option label="L(ds) = dt - k*d^2x" selected>1</option>
-                            <option label="L(ds) = d^2t - c^2*d^2x">2</option>
-                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
+                            <option disabled label="L(ds) = d^2t - c^2*d^2x">2</option>
+                            <option disabled label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
                         } else if("2".equals(modelDetails.getModel())) {
                             <option label="L(ds) = dt - k*d^2x">1</option>
-                            <option label="L(ds) = d^2t - c^2*d^2x" selected>2</option>
-                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
+                            <option disabled label="L(ds) = d^2t - c^2*d^2x" selected>2</option>
+                            <option disabled label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
                         } else if("3".equals(modelDetails.getModel())) {
                             <option label="L(ds) = dt - k*d^2x" selected>1</option>
-                            <option label="L(ds) = d^2t - c^2*d^2x">2</option>
-                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2" selected>3</option>
+                            <option disabled label="L(ds) = d^2t - c^2*d^2x">2</option>
+                            <option disabled label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2" selected>3</option>
                         } else {
                             <option label="L(ds) = dt - k*d^2x">1</option>
-                            <option label="L(ds) = d^2t - c^2*d^2x">2</option>
-                            <option label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
+                            <option disabled label="L(ds) = d^2t - c^2*d^2x">2</option>
+                            <option disabled label="L(x,y) = dY/dt + dY/dx + Y - d^2Y/dx^2">3</option>
                         }
                     </select>
                 </div>

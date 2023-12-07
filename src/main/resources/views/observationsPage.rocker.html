@@ -11,6 +11,7 @@
     OneDimensionObservationDto r,
     String xMin,
     String xMax,
+    String tMax,
     AppProperties properties
 )
 
@@ -28,15 +29,7 @@
                     </p>
                 </div>
                 <form method="get" action="/observations" id="observation-form" class="row">
-                    <div class="col-6 col-sm-3 mb-4">
-                        <label for="left-limit-input" class="px-2 col-form-label">x min</label>
-                        <input value="@?xMin" type="text" name="xMin" class="form-control" id="left-limit-input" required>
-                    </div>
-                    <div class="col-6 col-sm-3 mb-4">
-                        <label for="right-limit-input" class="px-2 col-form-label">x max</label>
-                        <input value="@?xMax" type="text" name="xMax" class="form-control" id="right-limit-input" required>
-                    </div>
-                    <div class="col-6 mb-4"></div>
+
                     <input type="text" value="@?modelDetails.getModel()" hidden="" name="model" class="d-none" id="model-input">
                     <input type="text" value="@?modelDetails.getDimensionsNumber()" hidden="" name="dimensionsNumber" class="d-none" id="dimensions-number-input">
                     <input type="text" value="@?modelDetails.getStateFunction()" hidden="" name="stateFunction" class="d-none" id="state-function-input">
@@ -45,12 +38,24 @@
                     <input type="text" hidden="" name="l" class="d-none" id="l-input">
                     <input type="text" hidden="" name="r" class="d-none" id="r-input">
 
-                    <div class="col-3 mb-1"></div>
-                    <div class="px-4 col-3 mb-1">x</div>
-                    <div class="px-4 col-3 mb-1">t</div>
-                    <div class="col-3 mb-1"></div>
-
-                    <div class="row" id="initial-form">
+                    <div class="row mb-4" id="initial-form">
+                        <div class="col-6 col-sm-3 mb-4">
+                            <label for="left-limit-input" class="px-2 col-form-label">x min</label>
+                            <input value="@?xMin" type="text" name="xMin" class="form-control" id="left-limit-input" required>
+                        </div>
+                        <div class="col-6 col-sm-3 mb-4">
+                            <label for="right-limit-input" class="px-2 col-form-label">x max</label>
+                            <input value="@?xMax" type="text" name="xMax" class="form-control" id="right-limit-input" required>
+                        </div>
+                        <div class="col-6 col-sm-3 mb-4">
+                            <label for="max-time-input" class="px-2 col-form-label">t max</label>
+                            <input value="@?tMax" type="text" name="tMax" class="form-control" id="max-time-input" required>
+                        </div>
+                        <div class="col-3 mb-4"></div>
+                        <div class="col-3 mb-1"></div>
+                        <div class="px-4 col-3 mb-1">x</div>
+                        <div class="px-4 col-3 mb-1">t</div>
+                        <div class="col-3 mb-1"></div>
                         <div class="col-3 mb-2">Початкове</div>
                         <div class="col-3 mb-2">
                             <input type="text" value="@?in.getX()" class="form-control" id="initial-x-input" required>
